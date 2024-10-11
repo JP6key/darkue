@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title>6K X難易度表</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="bmstable" content="header.json" />
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous">
+    </script>
+</head>
+
+<body>
+    <header class="mb-3">
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h1">6K X難易度表</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <div class="alert alert-success mb-3" role="alert">
+            <p>身内6K譜面置き場</p>
+            <p>難易度表の読み込みと表示に数秒かかります。</p>
+            <hr>
+            <p class="mb-0">難易度数値ルール(仮)<br>
+X1…6UELv17(EZ2ON Lv17)<br>
+X2…6UELv18(EZ2ON Lv18)<br>
+X3…6UELv19(EZ2ON Lv19)<br>
+X4…6UELv20~21(EZ2ON Lv20)<br>
+X5…6UELv21~22(EZ2ON Lv20最上位)<br>
+X6…6UELv22~23<br>
+X7…6UELv23~24<br>
+X8…6UELv24~25<br>
+X9…6UELv25~26<br>
+X10…6UELv26〜Ω<br>
+XX…6UELvΩ</p>
+        </div>
+
+
+        <!--ここから難易度表本体-->
+        <div>
+            <table class="table table-light table-striped table-hover" id="table_int">
+            </table>
+        </div>
+        <script language="javascript" type="text/javascript">
+            $(document).ready(function () {
+                $.getJSON($("meta[name=bmstable]").attr("content"), function (header) {
+                    $.getJSON(header.data_url, function (information) {
+                        makeBMSTable(information, header.symbol);
+                    });
+                });
+            });
+
+            function makeBMSTable(info, mark) {
+                var x = "";
+                var ev = "";
+                var count = 0;
+                var obj = $("#table_int");
+
+                obj.html("");
+                $("<thead class='table-dark'><tr><th>Level</th><th>Title</th><th>Artist</th><th>Sabun</th><th>Comment</th></tr></thead><tbody>")
+                    .appendTo(obj);
+                var obj_sep = null;
+                for (var i = 0; i < info.length; i++) {
+                    if (x != info[i].level) {
+                        if (obj_sep != null) {
+                            obj_sep.html("<td colspan='5'>" + "<b>" + mark + x + " (" + count +
+                                "譜面)</b></td>");
+                        }
+                        obj_sep = $("<tr class='table-dark' style='text-align:center' id='" + mark + info[i].level +
+                            "'></tr>");
+                        obj_sep.appendTo(obj);
+                        count = 0;
+                        x = info[i].level;
+                    }
+
+                    var str = $("<tr></tr>");
+
+                    var str = $("<tr class='tr_normal'></tr>");
+
+        if(info[i].state == 1) {
+        str = $("<tr class='state1'></tr>");
+        }
+        if(info[i].state == 2) {
+        str = $("<tr class='state2'></tr>");
+        }
+        if(info[i].state == 3) {
+        str = $("<tr class='state3'></tr>");
+        }
+        if(info[i].state == 4) {
+        str = $("<tr class='state4'></tr>");
+        }
+        if(info[i].state == 5) {
+        str = $("<tr class='state5'></tr>");
+        }
+        if(info[i].state == 6) {
+        str = $("<tr class='state6'></tr>");
+
+        }
+
+// Level
+if (info[i].md5 != "" && info[i].md5 != null) {
+                        $("<td width='5%'>" +
+                            "<a href='https://ez2pattern.kr/bms/chart?md5=" + info[i]
+                            .md5 + "' target='_blank'>" + mark + x + "</a></td>").appendTo(str);
+                    }
+else{
+                        $("<td width='5%'>" + mark + x + "</td>").appendTo(str);
+                    }
+
+                    // Title
+                    if (info[i].md5 != "" && info[i].md5 != null) {
+                        $("<td width='35%'>" +
+                            "<a href='https://ez2pattern.kr/bms/qwilight-IR?md5=" + info[i]
+                            .md5 + "' target='_blank'>" + info[i].title + "</a></td>").appendTo(str);
+                    }
+                    else{
+                        $("<td width='35%'>" +
+                            "<a href='https://mocha-repository.info/song.php?sha256=" + info[i]
+                            .sha256 + "' target='_blank'>" + info[i].title + "</a></td>").appendTo(str);
+                    }
+
+                    // Artist, url
+                    if (info[i].url != "" && info[i].url != null) {
+                        $("<td width='25%'>" +
+                            "<a href='" + info[i].url +
+                            "' target='_blank'>" + info[i].artist + "</a></td>").appendTo(str);
+                    }
+                    else{
+                        $("<td width='25%'>" + info[i].artist + "</td>").appendTo(str);
+                    }
+                    
+                    //sabun
+                    if (info[i].url_diff != "" && info[i].url_diff != null) {
+                        $("<td width='25%'>" +
+                            "<a href='" + info[i].url_diff +
+                            "' target='_blank'>" + info[i].name_diff + "</a></td>").appendTo(str);
+                    }
+                    else{
+                        $("<td width='25%'>" + info[i].name_diff + "</td>").appendTo(str);
+                    }
+                    
+                    // Comment
+                    $("<td width='10%'>" + info[i].comment + "</td>").appendTo(str);
+                    str.appendTo(obj);
+                    count++;
+
+                }
+                $("</tbody>").appendTo(obj);
+
+                if (obj_sep != null) {
+                    obj_sep.html("<td class='table-dark' style='text-align:center' colspan='5'>" + "<b>" + mark + x +
+                        " (" + count + "譜面)</b></td>");
+                }
+            }
+        </script>
+    </div>
+
+</html>
+
